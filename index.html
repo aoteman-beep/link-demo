@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随机跳转</title>
+<style>
+  :root { color-scheme: dark; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px;
+    background: #0f172a; color: #e2e8f0;
+    font-family: system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+  }
+  .card {
+    width: min(440px, 100%); background: #1e293b; border: 1px solid #334155;
+    border-radius: 16px; padding: 28px; text-align: center;
+  }
+  h1 { margin: 0 0 10px; font-size: 18px; }
+  p { margin: 6px 0; color: #94a3b8; font-size: 14px; line-height: 1.6; }
+  .target { word-break: break-all; color: #e2e8f0; font-size: 13px; }
+  a.btn {
+    display: inline-block; margin-top: 18px; padding: 11px 20px; border-radius: 10px;
+    background: #22c55e; color: #052e16; font-weight: 600; font-size: 15px; text-decoration: none;
+  }
+  .bar { height: 4px; background: #334155; border-radius: 999px; overflow: hidden; margin-top: 18px; }
+  .bar i { display: block; height: 100%; width: 0; background: #22c55e; transition: width .1s linear; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1>正在随机打开…</h1>
+    <p>本次随机选中：</p>
+    <p class="target" id="url"></p>
+    <div class="bar"><i id="fill"></i></div>
+    <a class="btn" id="go" href="#" rel="noopener">立即打开</a>
+  </div>
+
+<script>
+// 候选链接：想加账号就往下加一行
+const LINKS = [
+  'https://www.baidu.com',
+  'https://www.qq.com',
+];
+const COUNTDOWN_MS = 600; // 改成 0 表示立刻跳转
+
+const url = LINKS[Math.floor(Math.random() * LINKS.length)];
+const go = document.getElementById('go');
+const fill = document.getElementById('fill');
+
+go.href = url;
+document.getElementById('url').textContent = url;
+
+if (COUNTDOWN_MS === 0) {
+  location.replace(url);
+} else {
+  const started = Date.now();
+  const timer = setInterval(() => {
+    const p = Math.min(1, (Date.now() - started) / COUNTDOWN_MS);
+    fill.style.width = p * 100 + '%';
+    if (p >= 1) { clearInterval(timer); location.replace(url); }
+  }, 50);
+  go.addEventListener('click', () => clearInterval(timer));
+}
+</script>
+</body>
+</html>
